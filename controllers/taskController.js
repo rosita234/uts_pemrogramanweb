@@ -15,7 +15,7 @@ const taskController = {
     const userId = req.user.id;
     try {
       const tasks = await Task.findAllByUserId(userId);
-      res.json(tasks);
+      res.render('tasks/tasks.ejs', { tasks });
     } catch (err) {
        res.status(500).json({ message: 'Failed to fetch tasks' });
     }

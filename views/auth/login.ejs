@@ -37,7 +37,7 @@
 
           if (response.ok) {
             // Save Token to localStorage
-            localStorage.setItem("token", data.token);
+            document.cookie = `token=${data.token}; path=/`;
             alert("Login successful!");
 
             // Redirect to tasks page
