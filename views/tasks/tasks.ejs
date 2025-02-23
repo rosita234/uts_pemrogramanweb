@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tasks</title>
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body>
+    <h2>Your Tasks</h2>
+    <ul>
+      <% tasks.forEach(task => { %>
+        <li>
+          <strong><%= task.title %></strong> - <%= task.description %>
+          <% if (task.completed) { %>
+            <span style="color: green;">(Completed)</span>
+          <% } else { %>
+            <span style="color: red;">(Pending)</span>
+          <% } %>
+        </li>
+      <% }) %>
+    </ul>
+  </body>
+</html>
