@@ -49,6 +49,27 @@
           console.error("Login error:", error);
         }
       });
+
+      // Example of sending the Authorization header using fetch
+      async function fetchTasks() {
+        try {
+          const response = await fetch("/api/tasks", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+          });
+
+          const data = await response.json();
+          console.log(data);
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      }
+
+      // Call fetchTasks when the page loads
+      window.onload = fetchTasks;
     </script>
   </body>
 </html>
