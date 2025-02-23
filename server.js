@@ -6,16 +6,20 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 app.set("view engine", "ejs");
 app.set("views", "./views");
 
-app.use(express.json());
+app.use(express.static("public"));
 
-// Auth routes - no middleware required here
 app.use("/api/auth", authRoutes);
-
-// Task routes - middleware is used inside taskRoutes.js
 app.use("/api", taskRoutes);
+
+app.get("/", (req, res) => {
+  res.render("index");
+});
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
