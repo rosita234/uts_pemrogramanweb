@@ -1,6 +1,7 @@
 const Task = require('../models/taskModel');
 
 const taskController = {
+  // Create Task
   createTask: async (req, res) => {
     console.log(req.body);
     const { title, description } = req.body;
@@ -12,6 +13,7 @@ const taskController = {
       res.status(500).json({ message: 'Task creation failed' });
     }
     },
+  // Get Tasks
   getTasks: async (req, res) => {
     const userId = req.user.id;
     try {
@@ -21,6 +23,7 @@ const taskController = {
       res.status(500).json({ message: 'Failed to fetch tasks' });
     }
   },
+  // Update Task
   updateTask: async (req, res) => {
     const { id } = req.params;
     const { title, description, completed } = req.body;
@@ -31,6 +34,7 @@ const taskController = {
       res.status(500).json({ message: 'Task update failed' });
     }
   },
+  //Delete Task
   deleteTask: async (req, res) => {
     const { id } = req.params;
     try {

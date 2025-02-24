@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const authRoutes = require('./routes/authRoutes');
 const taskRoutes = require('./routes/taskRoutes');
 
+
 require('dotenv').config();
 
 //Middleware for JSON body parsing
@@ -36,6 +37,7 @@ app.get('/api/tasks', async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
+
 
 //Home Route
 const port = process.env.PORT || 3000;

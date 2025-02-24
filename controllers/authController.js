@@ -3,12 +3,17 @@ const Bcrypt = require('bcrypt');
 const User = require('../models/userModel');
 const { generateToken } = require('../config/auth');
 
+// Auth Controller
 const authController = {
+  // Register a new user
   register: async (req, res) => {
+    // Get username and password from request body
     const { username, password } = req.body;
+    // Create a new user, each user have an unique username and password (encrypted and use token for authentication)
     try {
       const userId = await User.create(username, password);
       const token = generateToken(userId);
+      // Send the token back to the user
       res.status(201).json({ token });
     } catch (err) {
       res.status(500).json({ message: 'Registration failed' });

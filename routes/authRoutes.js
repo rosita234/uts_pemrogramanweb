@@ -8,8 +8,15 @@ router.get("/register", (req, res) => {
   res.render("auth/register"); 
 });
 
+//route login
 router.get("/login", (req, res) => {
   res.render("auth/login"); 
+});
+
+//route logout
+router.get('/logout', (req, res) => {
+  res.clearCookie('token');
+  res.redirect('/api/auth/login');
 });
 
 module.exports = router;

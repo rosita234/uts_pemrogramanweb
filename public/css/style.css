@@ -19,7 +19,6 @@ body {
 /* Container styling */
 .container {
   width: 100%;
-  max-width: 450px; /* Tidak terlalu panjang */
   background: white;
   padding: 25px;
   border-radius: 8px;
@@ -84,11 +83,18 @@ button:hover {
   background-color: #0056b3;
 }
 
-/* Table Styling */
+.table-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  overflow-x: auto;
+  margin: 20px 0;
+}
+
 table {
-  width: 90%;
-  max-width: 800px;
-  margin: 20px auto;
+  width: 90%;  /* Table width is 90% of its container */
+  display: flex;
+  flex-direction: column;
   border-collapse: collapse;
   background: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -96,16 +102,39 @@ table {
   overflow: hidden;
 }
 
-th,
-td {
+thead {
+  flex: 0 0 auto;
+  width: 100%;
+  display: table;
+  table-layout: fixed;
+  background-color: #007bff;
+  color: white;
+}
+
+thead th {
+  padding: 12px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+tbody {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow-y: auto;
+  max-height: 400px; /* Set max height for scrolling */
+}
+
+tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+tbody td {
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #ddd;
-}
-
-th {
-  background-color: #007bff;
-  color: white;
 }
 
 /* Button Aksi */
@@ -149,7 +178,7 @@ a.btn:hover {
 }
 
 /* Responsive Design */
-@media (max-width: 500px) {
+@media (max-width: 800px) {
   .container {
     width: 90%;
   }
