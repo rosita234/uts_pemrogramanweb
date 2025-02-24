@@ -2,6 +2,7 @@ const Task = require('../models/taskModel');
 
 const taskController = {
   createTask: async (req, res) => {
+    console.log(req.body);
     const { title, description } = req.body;
     const userId = req.user.id;
     try {
@@ -15,9 +16,9 @@ const taskController = {
     const userId = req.user.id;
     try {
       const tasks = await Task.findAllByUserId(userId);
-      res.render('tasks/tasks.ejs', { tasks });
+      res.json(tasks); // Send JSON data
     } catch (err) {
-       res.status(500).json({ message: 'Failed to fetch tasks' });
+      res.status(500).json({ message: 'Failed to fetch tasks' });
     }
   },
   updateTask: async (req, res) => {
