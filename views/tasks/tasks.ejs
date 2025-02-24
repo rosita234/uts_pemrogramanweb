@@ -10,7 +10,10 @@
   </head>
   <body>
     <div class="container">
-      <h2 className="">To Do List!</h2>
+      <div class="row-top d-flex justify-content-between align-items-center">
+        <h2>To Do List!</h2>
+        <button type="button" class="btn btn-danger" onclick="logout()">Logout</button>
+      </div>
     <!-- Task Filter Dropdown -->
       <div class="d-flex justify-content-between align-items-center mt-3 mb-2">
         <div class="d-flex align-items-center">
@@ -303,6 +306,11 @@
         }
       };
 
+      //logout from loggeed in user
+      const logout = () => {
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        window.location.href = "/api/auth/login";
+      };
 
       // Call loadTasks on page load
       loadTasks();
