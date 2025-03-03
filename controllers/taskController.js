@@ -5,7 +5,8 @@ const taskController = {
   // Create Task
   createTask: async (req, res) => {
     const { title, kategori, description } = req.body;
-    const deadline = req.body.deadline ? new Date(req.body.deadline) : new Date();
+    //send deadline as date and not string
+    const deadline = req.body.deadline ? new Date(req.body.deadline) : new Date().toISOString().split('T')[0];
     const userId = req.user.id;
     try {
       const taskId = await Task.create(userId, title, kategori, description, deadline);
@@ -28,8 +29,10 @@ const taskController = {
   // Update Task
   updateTask: async (req, res) => {
     const { id } = req.params;
-    const { title, kategori, description, completed} = req.body;
-    const deadline = req.body.deadline ? new Date(req.body.deadline) : new Date();
+    const { title, kategori, description} = req.body;
+    const completed = req.body.completed == "true" || req.body.completed == 1 ? 1 : 0;
+    //send deadline as date and not string
+    const deadline = req.body.deadline ? new Date(req.body.deadline) : new Date().toISOString().split('T')[0];
     try {
       await Task.update(id, title, kategori, description, completed, deadline);
       res.json({ message: 'Task updated' });

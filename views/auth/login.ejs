@@ -1,75 +1,125 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Login</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-  </head>
-  <body>
-    <div class="container mt-4">
-      <h2>Login</h2>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+    body {
+      background-color: #f8f9fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .login-container {
+      width: 100%;
+      max-width: 400px;
+    }
+    .card {
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .btn-primary {
+      background-color: #007bff;
+      border: none;
+    }
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <div class="card p-4">
+      <h3 class="text-center mb-3">Login</h3>
       <form id="loginForm">
-        <input type="text" id="username" placeholder="Username" required class="form-control mb-2">
-        <input type="password" id="password" placeholder="Password" required class="form-control mb-2">
-        <button type="submit" class="btn btn-primary">Login</button>
+        <div class="mb-3">
+          <input type="text" name="username" placeholder="Username" required class="form-control">
+        </div>
+        <div class="mb-3">
+          <input type="password" name="password" placeholder="Password" required class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Login</button>
       </form>
-      <p>Don't have an account? <a href="/api/auth/register">Register here</a></p>
+      <p class="text-center mt-3">Don't have an account? <a href="/api/auth/register">Register here</a></p>
     </div>
+  </div>
 
-    <script>
-      // Handle Login Form Submission
-      document.getElementById("loginForm").addEventListener("submit", async function(event) {
-        event.preventDefault();
+  <!-- Toast Notification -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="loginToast" class="toast align-items-center text-bg-success border-0 shadow" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body" id="toastMessage">Logged in successfully!</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
 
-        const username = document.getElementById("username").value;
-        const password = document.getElementById("password").value;
+  <script>
+    // WebSocket Connection
+    const socket = new WebSocket("ws://localhost:3000/socket");
 
-        try {
-          const response = await fetch("/api/auth/login", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ username, password })
-          });
+    socket.onopen = function() {
+      console.log("WebSocket connected.");
+    };
 
-          const data = await response.json();
+    socket.onmessage = function(event) {
+      console.log("WebSocket Message:", event.data);
+      document.getElementById("toastMessage").innerText = event.data;
+      const toastElement = new bootstrap.Toast(document.getElementById("loginToast"));
+      toastElement.show();
+    };
 
-          if (response.ok) {
-            // Save Token to localStorage
-            document.cookie = `token=${data.token}; path=/`;
-            alert("Login successful!");
+    socket.onclose = function() {
+      console.log("WebSocket connection closed.");
+    };
 
-            // Redirect to tasks page
+    // Handle Login Form Submission
+    document.getElementById("loginForm").addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      const username = document.querySelector("input[name='username']").value;
+      const password = document.querySelector("input[name='password']").value;
+
+      try {
+        const response = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json();
+        console.log("Login Response:", data);
+
+        if (response.ok) {
+          document.cookie = `token=${data.token}; path=/`;
+
+          // Send WebSocket message for success
+          socket.send("User logged in successfully!");
+
+          // Show Success Toast
+          document.getElementById("toastMessage").innerText = "Logged in successfully!";
+          const toastElement = new bootstrap.Toast(document.getElementById("loginToast"));
+          toastElement.show();
+
+          // Redirect to dashboard after 3 seconds
+          setTimeout(() => {
             window.location.href = "/tasks";
-          } else {
-            alert(data.message);
-          }
-        } catch (error) {
-          console.error("Login error:", error);
+          }, 3000);
+        } else {
+          socket.send("User login failed: " + data.message);
+          alert(data.message);
         }
-      });
-
-      // Example of sending the Authorization header using fetch
-      async function fetchTasks() {
-        try {
-          const response = await fetch("/api/tasks", {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${localStorage.getItem("token")}`
-            }
-          });
-
-          const data = await response.json();
-          // console.log(data);
-        } catch (error) {
-          console.error("Error:", error);
-        }
+      } catch (error) {
+        console.error("Login error:", error);
+        alert("An error occurred. Please try again.");
       }
+    });
+  </script>
 
-      // Call fetchTasks when the page loads
-      window.onload = fetchTasks;
-    </script>
-  </body>
+</body>
 </html>

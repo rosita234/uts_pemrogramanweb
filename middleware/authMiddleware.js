@@ -6,6 +6,7 @@ const authMiddleware = (req, res, next) => {
   const token = req.headers.cookie.replace("token=", "").replace('Bearer ', '');
   if (!token) return res.status(401).json({ message: 'Access denied' });
   try {
+    // decode token and get user
     const decoded = verifyToken(token);
     req.user = decoded;
     next();
